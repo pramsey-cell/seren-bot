@@ -11,7 +11,7 @@ FEEDS = [
     {
         "label": "New Drops",
         "value": "feed_new_drops",
-        "roleId": 000000000000000000,
+        "roleId": 1520149266725605587,
         "emoji": "☕",
         "description": "New beans, roasts, and seasonal menu items",
     },
