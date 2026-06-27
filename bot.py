@@ -157,10 +157,10 @@ async def feeds(interaction: discord.Interaction):
 @app_commands.default_permissions(manage_guild=True)
 async def feeds_panel(interaction: discord.Interaction):
     embed = discord.Embed(
-        title="☕ Customize Your Feeds",
+        title="☕ What can we pour you?",
         description=(
-            "Tap the button below to choose which updates you want to follow — "
-            "new drops, events, deals, brew tips, and more. Change it anytime."
+            "Tap below to build your tab — pick the updates you actually want,"
+            "and we'll only ping you about those. Change it anytime."
         ),
         color=0x6F4E37,
     )
