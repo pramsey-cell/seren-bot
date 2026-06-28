@@ -182,6 +182,7 @@ feed_choices = [
     feed="Which feed to notify",
     message="What you want to announce",
     channel="Where to post it (defaults to this channel)",
+    attachment="Optional photo or file to include",
 )
 @app_commands.choices(feed=feed_choices)
 @app_commands.default_permissions(manage_guild=True)
@@ -190,6 +191,7 @@ async def feed_post(
     feed: app_commands.Choice[str],
     message: str,
     channel: discord.TextChannel = None,
+    attachment: discord.Attachment = None,
 ):
     feed_cfg = next((f for f in FEEDS if f["value"] == feed.value), None)
     role = interaction.guild.get_role(feed_cfg["roleId"]) if feed_cfg else None
@@ -205,6 +207,9 @@ async def feed_post(
         f"Posting to **{role.name}** in {target.mention}…", ephemeral=True
     )
 
+    # Download the uploaded file (if any) so the bot can re-post it.
+    upload = await attachment.to_file() if attachment else None
+
     # Briefly make the role mentionable so the ping actually notifies people,
     # then set it back. Uses the Manage Roles permission the bot already has.
     was_mentionable = role.mentionable
@@ -213,13 +218,15 @@ async def feed_post(
             await role.edit(mentionable=True)
         await target.send(
             content=f"{role.mention}\n\n{message}",
+            file=upload,
             allowed_mentions=discord.AllowedMentions(roles=[role]),
         )
     except discord.Forbidden:
         await interaction.edit_original_response(
             content=(
-                "I couldn't post that. Make sure I have **Manage Roles** + "
-                "**Send Messages**, and that my role sits above the feed roles."
+                "I couldn't post that. Make sure I have **Manage Roles**, "
+                "**Send Messages**, and **Attach Files**, and that my role sits "
+                "above the feed roles."
             )
         )
         return
